@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Golf - Pizza Dough Calculator</title>
+    <style>
+        :root {
+            --primary-green: #1b4d3e;
+            --fairway-green: #2e7d32;
+            --light-green: #e8f5e9;
+            --dark-slate: #212121;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f5;
+            color: var(--dark-slate);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-green);
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
+            color: var(--fairway-green);
+        }
+
+        .header p {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-style: italic;
+        }
+
+        .calculator-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            box-sizing: border-box;
+            border-top: 8px solid var(--primary-green);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 0.5px;
+            margin: 25px 0 15px 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--primary-green);
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--fairway-green);
+        }
+
+        .unit {
+            position: absolute;
+            right: 15px;
+            color: #777;
+            font-weight: 500;
+            pointer-events: none;
+        }
+
+        .results-section {
+            margin-top: 30px;
+            border-top: 2px dashed #ddd;
+            padding-top: 20px;
+        }
+
+        .results-section h2 {
+            color: var(--primary-green);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+
+        .ingredient-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.05rem;
+        }
+
+        .sub-ingredient {
+            padding-left: 20px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .ingredient-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: var(--primary-green);
+            background-color: var(--light-green);
+            padding: 12px 8px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .ingredient-name {
+            font-weight: 500;
+        }
+
+        .ingredient-value {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #555;
+            max-width: 450px;
+            line-height: 1.5;
+        }
+
+        .footer a {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 2px solid var(--fairway-green);
+            padding-bottom: 1px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .footer a:hover {
+            color: var(--fairway-green);
+            border-bottom-color: var(--primary-green);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🍕 Pizza <span>Golf</span></h1>
+        <p>Dial in your dough recipes like a perfect tee shot.</p>
+    </div>
+
+    <div class="calculator-container">
+        
+        <div class="section-title">Batch Size</div>
+        <div class="input-group">
+            <label for="balls">Number of Dough Balls</label>
+            <div class="input-wrapper">
+                <input type="number" id="balls" value="3" min="1" step="1">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="weight">Dough Ball Weight</label>
+            <div class="input-wrapper">
+                <input type="number" id="weight" value="250" min="10" step="5">
+                <span class="unit">g</span>
+            </div>
+        </div>
+
+        <div class="section-title">Flour Blend (Must Total 100%)</div>
+        <div class="input-group">
+            <label for="breadFlour">Bread Flour</label>
+            <div class="input-wrapper">
+                <input type="number" id="breadFlour" value="50" min="0" max="100" step="1">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="highGlutenFlour">High Gluten Flour</label>
+            <div class="input-wrapper">
+                <input type="number" id="highGlutenFlour" value="40" min="0" max="100" step="1">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="wheatFlour">Whole Wheat Flour</label>
+            <div class="input-wrapper">
+                <input type="number" id="wheatFlour" value="10" min="0" max="100" step="1">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <div class="section-title">Ingredients</div>
+        <div class="input-group">
+            <label for="hydration">Hydration (Water)</label>
+            <div class="input-wrapper">
+                <input type="number" id="hydration" value="61" min="50" max="100" step="0.5">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="salt">Salt</label>
+            <div class="input-wrapper">
+                <input type="number" id="salt" value="3" min="0" max="5" step="0.1">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="yeast">Instant Yeast</label>
+            <div class="input-wrapper">
+                <input type="number" id="yeast" value="0.5" min="0" max="5" step="0.05">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="sugar">Sugar</label>
+            <div class="input-wrapper">
+                <input type="number" id="sugar" value="2.5" min="0" max="10" step="0.1">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="oil">Olive Oil</label>
+            <div class="input-wrapper">
+                <input type="number" id="oil" value="3" min="0" max="10" step="0.1">
+                <span class="unit">%</span>
+            </div>
+        </div>
+
+        <!-- OUTPUTS -->
+        <div class="results-section">
+            <h2>Your Recipe Breakdown</h2>
+            
+            <div class="ingredient-row">
+                <span class="ingredient-name">🌾 Total Flour</span>
+                <span class="ingredient-value" id="res-flour">0 g</span>
+            </div>
+            <div class="ingredient-row sub-ingredient">
+                <span>↳ Bread Flour</span>
+                <span id="res-breadflour">0 g</span>
+            </div>
+            <div class="ingredient-row sub-ingredient">
+                <span>↳ High Gluten Flour</span>
+                <span id="res-hgflour">0 g</span>
+            </div>
+            <div class="ingredient-row sub-ingredient">
+                <span>↳ Whole Wheat Flour</span>
+                <span id="res-wheatflour">0 g</span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-name">💧 Water</span>
+                <span class="ingredient-value" id="res-water">0 g</span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-name">🧂 Salt</span>
+                <span class="ingredient-value" id="res-salt">0 g</span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-name">🍄 Instant Yeast</span>
+                <span class="ingredient-value" id="res-yeast">0.0 g</span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-name">🍬 Sugar</span>
+                <span class="ingredient-value" id="res-sugar">0 g</span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-name">🫒 Olive Oil</span>
+                <span class="ingredient-value" id="res-oil">0 g</span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-name">⚖️ Total Batch Weight</span>
+                <span class="ingredient-value" id="res-total">0 g</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Subscribe to <a href="https://www.youtube.com/@PizzaGolf" target="_blank" rel="noopener noreferrer">Pizza Golf on YouTube</a> for more tips & tricks!</p>
+    </div>
+
+    <script>
+        // Inputs
+        const ballsInput = document.getElementById('balls');
+        const weightInput = document.getElementById('weight');
+        const breadInput = document.getElementById('breadFlour');
+        const hgInput = document.getElementById('highGlutenFlour');
+        const wheatInput = document.getElementById('wheatFlour');
+        const hydrationInput = document.getElementById('hydration');
+        const saltInput = document.getElementById('salt');
+        const yeastInput = document.getElementById('yeast');
+        const sugarInput = document.getElementById('sugar');
+        const oilInput = document.getElementById('oil');
+
+        // Outputs
+        const resFlour = document.getElementById('res-flour');
+        const resBread = document.getElementById('res-breadflour');
+        const resHg = document.getElementById('res-hgflour');
+        const resWheat = document.getElementById('res-wheatflour');
+        const resWater = document.getElementById('res-water');
+        const resSalt = document.getElementById('res-salt');
+        const resYeast = document.getElementById('res-yeast');
+        const resSugar = document.getElementById('res-sugar');
+        const resOil = document.getElementById('res-oil');
+        const resTotal = document.getElementById('res-total');
+
+        function calculateDough() {
+            const balls = parseFloat(ballsInput.value) || 0;
+            const targetBallWeight = parseFloat(weightInput.value) || 0;
+            
+            const breadPct = parseFloat(breadInput.value) || 0;
+            const hgPct = parseFloat(hgInput.value) || 0;
+            const wheatPct = parseFloat(wheatInput.value) || 0;
+            
+            const hydrationPct = parseFloat(hydrationInput.value) || 0;
+            const saltPct = parseFloat(saltInput.value) || 0;
+            const yeastPct = parseFloat(yeastInput.value) || 0;
+            const sugarPct = parseFloat(sugarInput.value) || 0;
+            const oilPct = parseFloat(oilInput.value) || 0;
+
+            const totalDoughNeeded = balls * targetBallWeight;
+
+            // Total % = 100% (Flour) + water% + salt% + yeast% + sugar% + oil%
+            const totalPercentage = 100 + hydrationPct + saltPct + yeastPct + sugarPct + oilPct;
+
+            // Calculate master flour weight
+            const totalFlourWeight = (totalDoughNeeded / totalPercentage) * 100;
+
+            // Split master flour weight into the sub-flours
+            const flourSum = breadPct + hgPct + wheatPct || 100; 
+            const breadWeight = totalFlourWeight * (breadPct / flourSum);
+            const hgWeight = totalFlourWeight * (hgPct / flourSum);
+            const wheatWeight = totalFlourWeight * (wheatPct / flourSum);
+
+            // Calculate remaining ingredients from master flour weight
+            const waterWeight = totalFlourWeight * (hydrationPct / 100);
+            const saltWeight = totalFlourWeight * (saltPct / 100);
+            const yeastWeight = totalFlourWeight * (yeastPct / 100);
+            const sugarWeight = totalFlourWeight * (sugarPct / 100);
+            const oilWeight = totalFlourWeight * (oilPct / 100);
+
+            // Update UI
+            resFlour.textContent = Math.round(totalFlourWeight) + ' g';
+            resBread.textContent = Math.round(breadWeight) + ' g';
+            resHg.textContent = Math.round(hgWeight) + ' g';
+            resWheat.textContent = Math.round(wheatWeight) + ' g';
+            
+            resWater.textContent = Math.round(waterWeight) + ' g';
+            resSalt.textContent = Math.round(saltWeight) + ' g';
+            resSugar.textContent = Math.round(sugarWeight) + ' g';
+            resOil.textContent = Math.round(oilWeight) + ' g';
+            
+            // Show yeast to one decimal place for accuracy with tiny batches
+            resYeast.textContent = yeastWeight.toFixed(1) + ' g';
+            
+            resTotal.textContent = Math.round(totalDoughNeeded) + ' g';
+        }
+
+        // Auto-calculate on any input modification
+        [ballsInput, weightInput, breadInput, hgInput, wheatInput, hydrationInput, saltInput, yeastInput, sugarInput, oilInput].forEach(input => {
+            input.addEventListener('input', calculateDough);
+        });
+
+        calculateDough();
+    </script>
+</body>
+</html>
